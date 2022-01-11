@@ -1,0 +1,37 @@
+Starting Klippy...
+Args: ['/klipper/klippy/klippy.py', '-l', '/shared/foo/klippy.log', '/shared/foo/klipper.cfg']
+Git version: 'v0.10.0-223-g4c8d24ae'
+CPU: 4 core ?
+Python: '3.10.1 (main, Dec  8 2021, 03:36:29) [GCC 10.3.1 20211027]'
+Building C code module c_helper.so
+Start printer at Mon Jan 10 06:45:15 2022 (1641797115.1 1155647.4)
+Unable to open config file /shared/foo/klipper.cfg
+Traceback (most recent call last):
+  File "/klipper/klippy/configfile.py", line 153, in _read_config_file
+    f = open(filename, 'r')
+FileNotFoundError: [Errno 2] No such file or directory: '/shared/foo/klipper.cfg'
+Config error
+Traceback (most recent call last):
+  File "/klipper/klippy/configfile.py", line 153, in _read_config_file
+    f = open(filename, 'r')
+FileNotFoundError: [Errno 2] No such file or directory: '/shared/foo/klipper.cfg'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/klipper/klippy/klippy.py", line 157, in _connect
+    self._read_config()
+  File "/klipper/klippy/klippy.py", line 134, in _read_config
+    config = pconfig.read_main_config()
+  File "/klipper/klippy/configfile.py", line 274, in read_main_config
+    data = self._read_config_file(filename)
+  File "/klipper/klippy/configfile.py", line 159, in _read_config_file
+    raise error(msg)
+configparser.Error: Unable to open config file /shared/foo/klipper.cfg
+Starting Klippy...
+Args: ['/klipper/klippy/klippy.py', '-l', '/shared/foo/klippy.log', '/shared/foo/klipper.cfg']
+Git version: 'v0.10.0-223-g4c8d24ae'
+CPU: 4 core ?
+Python: '3.10.1 (main, Dec  8 2021, 03:36:29) [GCC 10.3.1 20211027]'
+Building C code module c_helper.so
+Unable to build C code module (error=2)
