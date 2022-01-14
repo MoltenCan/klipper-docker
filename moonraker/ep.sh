@@ -15,6 +15,5 @@
     exit 1
 }
 
-echo "starting klippy"
-# python3 /klipper/klippy/klippy.py -l /shared/${KDIR}/klippy.log /shared/${KDIR}/klipper.cfg
-python3 /klipper/klippy/klippy.py /shared/${KDIR}/klipper.cfg
+echo "starting moonraker"
+python3 /moonraker/moonraker/moonraker.py /shared/${KDIR}/moonraker.cfg

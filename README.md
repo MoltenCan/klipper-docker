@@ -13,7 +13,7 @@ components in here are based on other open source projects which are better than
 
 
 # crazy enough to try?
-so what i'm doing here is completely dockerising all the klipper components, my use case is running multiple printers off 1 single rpi 
+so what i'm doing here is completely dockerising all the klipper components, my use case is running multiple printers off 1 single rpi  
 I don't like python or messing with virtualenvs so I dockerise all the components  
 
 once I actually getting it working you should only need to run the printbox container which will detect your serial ports, download the images and run up klippers  

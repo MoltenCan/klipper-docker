@@ -4,13 +4,12 @@ WORKDIR /go/src
 
 # macos
 RUN GOOS=linux GOARCH=arm64 go build -o /go/bin/linux/arm64/printbox .
-# RUN go build -o /go/bin/linux/arm64/start .
 # # rpi3+
-# RUN GOOS=linux GOARCH=arm GOARM=7 go build -o /go/bin/linux/arm/v7/start .
+RUN GOOS=linux GOARCH=arm GOARM=7 go build -o /go/bin/linux/arm/v7/printbox .
 # # rpi
-# RUN GOOS=linux GOARCH=arm GOARM=6 go build -o /go/bin/linux/arm/v6/start .
+RUN GOOS=linux GOARCH=arm GOARM=6 go build -o /go/bin/linux/arm/v6/printbox .
 # # linux
-# RUN GOOS=linux GOARCH=amd64 go build -o /go/bin/linux/amd64/start .
+RUN GOOS=linux GOARCH=amd64 go build -o /go/bin/linux/amd64/printbox .
 
 FROM --platform=$TARGETPLATFORM moltencan/docker-compose2
 ARG TARGETPLATFORM

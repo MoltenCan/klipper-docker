@@ -1,5 +1,5 @@
 FROM --platform=$TARGETPLATFORM moltencan/alpine-kbase
-COPY klipper/ klipper/
+COPY moonraker/ moonraker/
 COPY ep.sh /usr/local/ep.sh
 ENTRYPOINT [ "/usr/local/ep.sh" ]
 
