@@ -1,7 +1,7 @@
-package lib_test
+package printbox_test
 
 import (
-	"start/lib"
+	"printbox/internal/printbox"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -10,9 +10,9 @@ import (
 func TestGetBoard(t *testing.T) {
 	assert := assert.New(t)
 
-	lib.CpuInfoFile = "./testdata/cpuinfo_pi3"
+	printbox.CpuInfoFile = "./testdata/cpuinfo_pi3"
 
-	resp, err := lib.GetBoard()
+	resp, err := printbox.GetBoard()
 	assert.Nil(err)
 	assert.NotNil(resp)
 

@@ -14,6 +14,6 @@ RUN GOOS=linux GOARCH=amd64 go build -o /go/bin/linux/amd64/printbox .
 FROM --platform=$TARGETPLATFORM moltencan/docker-compose2
 ARG TARGETPLATFORM
 COPY --from=builder /go/bin/${TARGETPLATFORM}/printbox /usr/local/bin/printbox
-COPY ep.sh /usr/local/ep.sh
+COPY ep.sh /ep.sh
 
-ENTRYPOINT [ "/usr/local/ep.sh" ]
+ENTRYPOINT [ "/ep.sh" ]

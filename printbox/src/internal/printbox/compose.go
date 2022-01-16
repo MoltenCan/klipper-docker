@@ -1,11 +1,11 @@
-package lib
+package printbox
 
 import (
 	"fmt"
 	"io/ioutil"
+	"path/filepath"
 
 	"gopkg.in/yaml.v3"
-	"path/filepath"
 )
 
 // a terrible bare minimum object representation of the compose objet
@@ -39,7 +39,8 @@ func BuildComposeFile(bi *BoardInfo) error {
 	}
 
 	// config volume
-	cs.Volumes["shared"] = nil
+	cs.Volumes["printbox"] = nil
+	volS := fmt.Sprintf("printbox:%s", SharedPath)
 
 	// create fluid
 	svc := Service{
@@ -47,7 +48,7 @@ func BuildComposeFile(bi *BoardInfo) error {
 		Ports:   []string{"80:80"},
 		Restart: "unless-stopped",
 		Volumes: []string{
-			"shared:/shared",
+			volS,
 		},
 	}
 	cs.Services["fluidd"] = svc
@@ -62,20 +63,31 @@ func BuildComposeFile(bi *BoardInfo) error {
 		portS := fmt.Sprintf("808%d:7125", li)
 		nameS := fmt.Sprintf("printer_%d", li)
 		deviceS := fmt.Sprintf("%s:/dev/klipperserial", port.Device)
-		envS := fmt.Sprintf("KLIPPER_ID=%d", li)
+		envS := fmt.Sprintf("PRINTBOX_DIR=%s/%d", SharedPath, li)
 
-		// create the service
+		// create the klipper service
 		svc := Service{
-			Build:   ".",
-			Ports:   []string{portS},
+			Image:   "moltencan/klipper",
 			Restart: "unless-stopped",
 			Volumes: []string{
-				"shared:/shared",
+				volS,
 			},
 			Devices:     []string{deviceS},
 			Environment: []string{envS},
 		}
-		cs.Services[nameS] = svc
+		cs.Services[nameS+"_klipper"] = svc
+
+		// create the moonraker service
+		svc = Service{
+			Image:   "moltencan/moonraker",
+			Ports:   []string{portS},
+			Restart: "unless-stopped",
+			Volumes: []string{
+				volS,
+			},
+			Environment: []string{envS},
+		}
+		cs.Services[nameS+"_moonraker"] = svc
 	}
 
 	// create the config-editor
@@ -89,7 +101,7 @@ func BuildComposeFile(bi *BoardInfo) error {
 			"TZ=America/Los_Angeles",
 		},
 		Volumes: []string{
-			"shared:/shared",
+			volS,
 		},
 	}
 	cs.Services["config-editor"] = svc

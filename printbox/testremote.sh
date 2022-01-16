@@ -8,4 +8,4 @@ cd ..
 scp start.arm7 ${tgt}:
 echo ""
 echo ""
-ssh ${tgt} "./start.arm7"
+ssh ${tgt} "./start.arm7; echo "-------------"; cat /printbox/docker-compose.yml"

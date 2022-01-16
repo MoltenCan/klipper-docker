@@ -5,16 +5,21 @@
     exit 0
 }
 
-[ -z $KDIR ] && {
-    echo "KDIR missing from env"
+[ -z $PRINTBOX_DIR ] && {
+    echo "PRINTBOX_DIR missing from env"
     exit 1
 }
 
-[ -e /shared/${KDIR} ] || {
-    echo "no shared folder /shared/${KDIR}"
+[ -e ${PRINTBOX_DIR} ] || {
+    echo "no shared folder ${PRINTBOX_DIR}"
     exit 1
+}
+
+[ -e ${PRINTBOX_DIR}/klipper.cfg ] || {
+    echo "no config detected, copying default"
+    sed "s#__PRINTBOX_DIR__#${PRINTBOX_DIR}#g" /klipper/klipper_default.cfg >${PRINTBOX_DIR}/klipper.cfg
+    mkdir -p ${PRINTBOX_DIR}/gcode
 }
 
 echo "starting klippy"
-# python3 /klipper/klippy/klippy.py -l /shared/${KDIR}/klippy.log /shared/${KDIR}/klipper.cfg
-python3 /klipper/klippy/klippy.py /shared/${KDIR}/klipper.cfg
+python3 /klipper/klippy/klippy.py -l ${PRINTBOX_DIR}/klippy.log -a ${PRINTBOX_DIR}/klipper.sock ${PRINTBOX_DIR}/klipper.cfg

@@ -4,32 +4,32 @@ import (
 	"errors"
 	"fmt"
 	"os"
-	"start/lib"
+	"printbox/internal/printbox"
 )
 
 func main() {
 
-	fmt.Println("printbox", lib.VERSION, "looking for ports...")
+	fmt.Println("printbox", printbox.VERSION, "looking for ports...")
 	if len(os.Args) > 1 {
 		if os.Args[1] == "-d" {
-			lib.Debug = true
-			lib.Debugf("debug enabled")
+			printbox.Debug = true
+			printbox.Debugf("debug enabled")
 		}
 	}
 
 	// make sure there is a shared directory
-	if _, err := os.Stat(lib.SharedPath); errors.Is(err, os.ErrNotExist) {
-		fmt.Println("no shared dir", lib.SharedPath)
+	if _, err := os.Stat(printbox.SharedPath); errors.Is(err, os.ErrNotExist) {
+		fmt.Println("no shared dir", printbox.SharedPath)
 		os.Exit(1)
 	}
 
-	board, err := lib.GetBoard()
+	board, err := printbox.GetBoard()
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	if err := lib.CheckPorts(board); err != nil {
+	if err := printbox.CheckPorts(board); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
@@ -40,12 +40,12 @@ func main() {
 	}
 	fmt.Println(board.USBCount, "port(s) found")
 
-	if err := lib.BuildComposeFile(board); err != nil {
+	if err := printbox.BuildComposeFile(board); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
 
-	if err := lib.CheckDirs(board); err != nil {
+	if err := printbox.CheckDirs(board); err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}

@@ -1,4 +1,4 @@
-package lib
+package printbox
 
 var PortsPi3B13 = []*USBInfo{
 	{

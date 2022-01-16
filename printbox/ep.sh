@@ -5,13 +5,18 @@
     exit 0
 }
 
+[ -e /var/run/docker.sock ] || {
+    echo "no /var/run/docker.sock"
+    exit 1
+}
+
 case "$1" in
 up)
     printbox || exit 1
-    docker-compse -f /printbox/docker-compose.yml up -d
+    docker-compose -f /printbox/docker-compose.yml up -d
     ;;
 down)
-    docker-compse -f /printbox/docker-compose.yml down
+    docker-compose -f /printbox/docker-compose.yml down
     ;;
 *)
     echo "sh | up | down"

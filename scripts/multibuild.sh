@@ -24,20 +24,28 @@ echo docker buildx create --use
 
 case $1 in
 all)
-    tag="printbox"
-    buildit $2
+    $0 "alpine-kbase" $2
+    $0 "printbox" $2
+    $0 "klipper" $2
+    $0 "moonraker" $2
+    $0 "fluidd" $2
     ;;
 printbox)
-    tag="printbox"
+    tag="$1"
     buildit $2
     ;;
 klipper)
-    tag="klipper"
+    tag="$1"
+    buildit $2
+    ;;
+moonraker)
+    tag="$1"
     buildit $2
     ;;
 fluidd)
-    tag="fluidd"
-    buildit $2
+    echo "not using official fluidd continaer?"
+    # tag="$1"
+    # buildit $2
     ;;
 alpine-kbase)
     tag="$1"
@@ -45,6 +53,6 @@ alpine-kbase)
     ;;
 *)
     echo "multibuild <target> [push]"
-    echo "targets  all | printbox | klipper | fluidd"
+    echo "targets  all | printbox | klipper | moonraker"
     ;;
 esac

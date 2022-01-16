@@ -1,0 +1,20 @@
+version: "3.9"  # optional since v1.27.0
+services:
+  klipper:
+    build: ../klipper/
+    volumes:
+      - testvol:/printbox/1
+    environment:
+      PRINTBOX_DIR: /printbox/1
+   
+  moonraker:
+    build: ../moonraker/
+    volumes:
+      - testvol:/printbox/1
+    environment:
+      PRINTBOX_DIR: /printbox/1
+    ports:
+      - 7125:7125
+
+volumes:
+  testvol: {}

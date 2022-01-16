@@ -1,5 +1,7 @@
 FROM --platform=$TARGETPLATFORM moltencan/alpine-kbase
 COPY moonraker/ moonraker/
-COPY ep.sh /usr/local/ep.sh
-ENTRYPOINT [ "/usr/local/ep.sh" ]
+COPY moonraker_default.cfg moonraker/moonraker_default.cfg
+
+COPY ep.sh /ep.sh
+ENTRYPOINT [ "/ep.sh" ]
 

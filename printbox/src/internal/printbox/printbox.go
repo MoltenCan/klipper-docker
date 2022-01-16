@@ -1,7 +1,8 @@
-package lib
+package printbox
 
 import (
 	"errors"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -13,9 +14,12 @@ const (
 	VERSION = "0.0.1"
 )
 
-var CpuInfoFile = "/proc/cpuinfo"
-var USBPath = "/dev/serial/by-path/"
-var SharedPath = "/printbox"
+var (
+	Debug       = false
+	CpuInfoFile = "/proc/cpuinfo"
+	USBPath     = "/dev/serial/by-path/"
+	SharedPath  = "/printbox"
+)
 
 type BoardInfo struct {
 	Hardware string
@@ -101,24 +105,6 @@ func CheckPorts(bi *BoardInfo) error {
 	return nil
 }
 
-// func CheckPortsx(bi *BoardInfo) {
-// 	bi.USBCount = 0
-// 	for i, port := range bi.USB {
-// 		Debugf("checking port %d %s", i, port.Path)
-// 		pFile := filepath.Join(port.Path, "product")
-// 		data, err := ioutil.ReadFile(pFile)
-// 		if err != nil {
-// 			Debugf(" not connected")
-// 			continue
-// 		}
-// 		fmt.Println(data)
-// 		port.Connected = true
-// 		port.Device = string(data)
-// 		Debugf(" %s", port.Device)
-// 		bi.USBCount++
-// 	}
-// }
-
 func ChkMkDir(path string) error {
 	if _, err := os.Stat(path); errors.Is(err, os.ErrNotExist) {
 		return os.MkdirAll(path, 0644)
@@ -136,4 +122,17 @@ func CheckDirs(bi *BoardInfo) error {
 		}
 	}
 	return nil
+}
+
+func Debugf(f string, v ...interface{}) {
+	if !Debug {
+		return
+	}
+	msg := fmt.Sprintf(f, v...)
+	fmt.Println(msg)
+}
+
+func Logf(f string, v ...interface{}) {
+	msg := fmt.Sprintf(f, v...)
+	fmt.Println(msg)
 }
