@@ -38,7 +38,7 @@ pull)
     printbox_pull
     ;;
 compiler)
-    printbox_compile $@
+    printbox_compile $2
     ;;
 start)
     printbox up -d
