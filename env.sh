@@ -20,6 +20,14 @@ function printbox-listports {
         list
 }
 
+function printbox-pull {
+    docker pull moltencan/printbox
+    docker pull moltencan/klipper
+    docker pull moltencan/moonraker
+    docker pull cadriel/fluidd
+}
+
 echo "actions available:"
 echo " printbox-up"
 echo " printbox-listports"
+echo " printbox-pull"
