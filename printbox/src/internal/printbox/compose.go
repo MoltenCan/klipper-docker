@@ -33,13 +33,15 @@ type Volume struct {
 
 func BuildComposeFile(bi *BoardInfo) error {
 	cs := &Composer{
-		Version:  "2.4",
+		Version:  "3.9",
 		Services: map[string]Service{},
 		Volumes:  map[string]*Volume{},
 	}
 
 	// config volume
-	cs.Volumes["printbox"] = nil
+	cs.Volumes["printbox"] = &Volume{
+		External: true,
+	}
 	volS := fmt.Sprintf("printbox:%s", SharedPath)
 
 	// create fluid
@@ -63,7 +65,8 @@ func BuildComposeFile(bi *BoardInfo) error {
 		portS := fmt.Sprintf("808%d:7125", li)
 		nameS := fmt.Sprintf("printer_%d", li)
 		deviceS := fmt.Sprintf("%s:/dev/klipperserial", port.Device)
-		envS := fmt.Sprintf("PRINTBOX_DIR=%s/%d", SharedPath, li)
+		envDir := fmt.Sprintf("PRINTBOX_DIR=%s/%d", SharedPath, li)
+		envID := fmt.Sprintf("PRINTBOX_ID=%d", li)
 
 		// create the klipper service
 		svc := Service{
@@ -72,8 +75,11 @@ func BuildComposeFile(bi *BoardInfo) error {
 			Volumes: []string{
 				volS,
 			},
-			Devices:     []string{deviceS},
-			Environment: []string{envS},
+			Devices: []string{deviceS},
+			Environment: []string{
+				envDir,
+				envID,
+			},
 		}
 		cs.Services[nameS+"_klipper"] = svc
 
@@ -85,7 +91,10 @@ func BuildComposeFile(bi *BoardInfo) error {
 			Volumes: []string{
 				volS,
 			},
-			Environment: []string{envS},
+			Environment: []string{
+				envDir,
+				envID,
+			},
 		}
 		cs.Services[nameS+"_moonraker"] = svc
 	}

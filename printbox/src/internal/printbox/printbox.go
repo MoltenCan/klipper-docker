@@ -117,7 +117,7 @@ func CheckDirs(bi *BoardInfo) error {
 		if !usb.Connected {
 			continue
 		}
-		if err := ChkMkDir(filepath.Join(SharedPath, strconv.Itoa(i))); err != nil {
+		if err := ChkMkDir(filepath.Join(SharedPath, strconv.Itoa(i+1))); err != nil {
 			return err
 		}
 	}
