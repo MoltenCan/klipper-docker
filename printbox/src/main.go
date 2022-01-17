@@ -6,6 +6,7 @@ import (
 	"io/ioutil"
 	"os"
 	"printbox/internal/printbox"
+	"printbox/internal/rpi"
 )
 
 func main() {
@@ -23,30 +24,30 @@ func main() {
 		printbox.Debugf("debug enabled")
 	}
 
-	// // make sure there is a shared directory
-	// if _, err := os.Stat(printbox.SharedPath); errors.Is(err, os.ErrNotExist) {
-	// 	fmt.Println("no shared dir", printbox.SharedPath)
-	// 	os.Exit(1)
-	// }
+	// are we on an RPI?
+	board, err := rpi.Identify()
+	if err == nil {
+		fmt.Println("detected", board.Model)
+	}
 
-	board, err := printbox.GetBoard()
+	ports, err := printbox.GetPorts(board)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
 	}
-
-	if err := printbox.CheckPorts(board); err != nil {
-		fmt.Println(err)
+	if len(ports) == 0 {
+		fmt.Println("no ports found")
 		os.Exit(1)
 	}
 
-	if board.USBCount == 0 {
-		fmt.Println("no ports connected")
-		os.Exit(1)
+	fmt.Println("ports found:")
+	fmt.Printf(" %-20s %s\n", "alias", "port")
+	for a, p := range ports {
+		fmt.Printf(" %-20s %s\n", a, p)
 	}
-	fmt.Println(board.USBCount, "port(s) found")
+	fmt.Println("")
 
-	cData, err := printbox.BuildComposeFile(board)
+	cData, err := printbox.BuildComposeFile(ports)
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)

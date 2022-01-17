@@ -24,8 +24,8 @@ type Service struct {
 	Volumes     []string `yaml:"volumes,omitempty"`
 	Build       string   `yaml:"build,omitempty"`
 	Devices     []string `yaml:"devices,omitempty"`
-	Networks    []string `yaml:"networks"`
-	Hostname    string   `yaml:"hostname"`
+	Networks    []string `yaml:"networks,omitempty"`
+	Hostname    string   `yaml:"hostname,omitempty"`
 }
 
 type Network struct {
@@ -39,7 +39,7 @@ type Volume struct {
 	External bool `json:"external,omitempty"`
 }
 
-func BuildComposeFile(bi *BoardInfo) ([]byte, error) {
+func BuildComposeFile(ports map[string]string) ([]byte, error) {
 	cs := &Composer{
 		Version:  "3.9",
 		Services: map[string]Service{},
@@ -57,7 +57,7 @@ func BuildComposeFile(bi *BoardInfo) ([]byte, error) {
 	volS := fmt.Sprintf("printbox:%s", SharedPath)
 
 	// create fluid
-	svc := Service{
+	cs.Services["fluidd"] = Service{
 		Image:   "cadriel/fluidd",
 		Ports:   []string{"80:80"},
 		Restart: "unless-stopped",
@@ -67,23 +67,43 @@ func BuildComposeFile(bi *BoardInfo) ([]byte, error) {
 		Networks: []string{"printbox"},
 		Hostname: "fluidd",
 	}
-	cs.Services["fluidd"] = svc
+
+	// create the config-editor
+	// cs.Services["config-editor"] = Service{
+	// 	Image:   "linuxserver/code-server",
+	// 	Ports:   []string{"8443:8443"},
+	// 	Restart: "unless-stopped",
+	// 	Environment: []string{
+	// 		"PUID=0",
+	// 		"GUID=0",
+	// 		"TZ=America/Los_Angeles",
+	// 	},
+	// 	Volumes: []string{
+	// 		volS,
+	// 	},
+	// 	Networks: []string{"printbox"},
+	// }
 
 	// create moonraker/klippers
-	for i, port := range bi.USB {
-		li := i + 1
-		if !port.Connected {
-			continue
-		}
-		// creater the names
-		portS := fmt.Sprintf("808%d:7125", li)
-		nameS := fmt.Sprintf("printer_%d", li)
-		deviceS := fmt.Sprintf("%s:/dev/klipperserial", port.Device)
-		envDir := fmt.Sprintf("PRINTBOX_DIR=%s/%d", SharedPath, li)
-		envID := fmt.Sprintf("PRINTBOX_ID=%d", li)
+	i := 0
+	for alias, port := range ports {
+		i++
 
-		// create the klipper service
-		svc := Service{
+		// creater the names
+		portS := fmt.Sprintf("808%d:7125", i)
+		nameS := fmt.Sprintf("printer_%s", alias)
+		deviceS := fmt.Sprintf("%s:/dev/klipperserial", port)
+		envDir := fmt.Sprintf("PRINTBOX_DIR=%s/%s", SharedPath, alias)
+		envID := fmt.Sprintf("PRINTBOX_ID=%d", i)
+
+		fmt.Printf("klipraker %s\n", nameS)
+		fmt.Printf(" %-20s %s\n", "moonraker port", portS)
+		fmt.Printf(" %-20s %s\n", "serial", port)
+		fmt.Printf(" %-20s %s\n", "shared dir", envDir)
+		fmt.Println()
+
+		// create the klipraker service
+		cs.Services[nameS] = Service{
 			Image:   "moltencan/klipraker",
 			Restart: "unless-stopped",
 			Ports:   []string{portS},
@@ -96,27 +116,9 @@ func BuildComposeFile(bi *BoardInfo) ([]byte, error) {
 				envID,
 			},
 			Networks: []string{"printbox"},
-			Hostname: fmt.Sprintf("printer%d", li),
+			Hostname: nameS,
 		}
-		cs.Services[nameS+"klipraker"] = svc
-
 	}
-
-	// create the config-editor
-	svc = Service{
-		Image:   "linuxserver/code-server",
-		Ports:   []string{"8443:8443"},
-		Restart: "unless-stopped",
-		Environment: []string{
-			"PUID=0",
-			"GUID=0",
-			"TZ=America/Los_Angeles",
-		},
-		Volumes: []string{
-			volS,
-		},
-	}
-	cs.Services["config-editor"] = svc
 
 	data, err := yaml.Marshal(cs)
 	if err != nil {
