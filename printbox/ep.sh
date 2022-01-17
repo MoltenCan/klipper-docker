@@ -5,30 +5,26 @@
     exit 0
 }
 
-function check_sock {
-    [ -e /var/run/docker.sock ] || {
-        echo "no /var/run/docker.sock"
-        exit 1
-    }
-}
-
 [ -z $SHARED_PATH ] && {
     echo "Dfaulting SHARED_PATH to /shared"
     SHARED_PATH="/shared"
 }
 
+[ -e $SHARED_PATH ] || {
+    mkdir -p $SHARED_PATH
+}
+
 case "$1" in
 up)
-    check_sock
     printbox -o ${SHARED_PATH}/docker-compose.yml || exit 1
+    cat ${SHARED_PATH}/docker-compose.yml
     docker-compose -f ${SHARED_PATH}/docker-compose.yml up -d
     ;;
 down)
-    check_sock
     docker-compose -f ${SHARED_PATH}/docker-compose.yml down
     ;;
 list)
-    printbox
+    printbox -o /dev/null
     ;;
 *)
     echo "sh | up | down | list"

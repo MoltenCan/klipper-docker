@@ -54,8 +54,10 @@ func main() {
 	}
 
 	printbox.Logf("writing compose to %s", outfile)
-	if err := ioutil.WriteFile(outfile, cData, 0644); err != nil {
-		printbox.Logf(err.Error())
+	err = ioutil.WriteFile(outfile, cData, 0644)
+	if err != nil {
+		fmt.Println("failed to write compose:", err)
+		os.Exit(1)
 	}
 
 	// if err := printbox.CheckDirs(board); err != nil {
