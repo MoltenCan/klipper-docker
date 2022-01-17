@@ -6,7 +6,7 @@ SRC_DIR="klipraker/src"
     mkdir -p $SRC_DIR
 }
 
-function update() {
+function update {
     echo $SRC_DIR/$1
     if [ -e $SRC_DIR/$1 ]; then
         git -C $SRC_DIR/$1 pull
@@ -15,7 +15,7 @@ function update() {
     fi
 }
 
-function updatereq() {
+function updatereq {
     cat $SRC_DIR/klipper/scripts/klippy-requirements.txt | grep -v Jinja2 >alpine-kbase/requirements.txt
     cat $SRC_DIR/moonraker/scripts/moonraker-requirements.txt >>alpine-kbase/requirements.txt
 }
