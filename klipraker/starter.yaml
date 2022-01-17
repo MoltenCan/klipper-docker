@@ -1,0 +1,21 @@
+init:
+  - "/opt/init.sh"
+commands:
+- name: klipper
+  command:
+  - python3
+  - "/opt/klipper/klippy/klippy.py"
+  - -l
+  - ${PRINTBOX_DIR}/klippy.log
+  - -a
+  - ${PRINTBOX_DIR}/klipper.sock
+  - ${PRINTBOX_DIR}/klipper.cfg
+
+- name: moonraker
+  command:
+  - python3
+  - /opt/moonraker/moonraker/moonraker.py
+  - -l
+  - ${PRINTBOX_DIR}/moonraker.log
+  - -c
+  - ${PRINTBOX_DIR}/moonraker.cfg

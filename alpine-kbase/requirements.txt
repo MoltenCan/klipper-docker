@@ -8,7 +8,7 @@ greenlet==1.1.2
 python-can==3.3.4
 # Python dependencies for Moonraker
 tornado==6.1.0
-pyserial==3.4
+pyserial-asyncio==0.6
 pillow==9.0.0
 lmdb==1.2.1
 streaming-form-data==1.8.1

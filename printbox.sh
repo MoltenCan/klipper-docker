@@ -28,8 +28,7 @@ function printbox_compile {
 
 function printbox_pull {
     docker pull moltencan/printbox
-    docker pull moltencan/klipper
-    docker pull moltencan/moonraker
+    docker pull moltencan/klipraker
     docker pull cadriel/fluidd
 }
 

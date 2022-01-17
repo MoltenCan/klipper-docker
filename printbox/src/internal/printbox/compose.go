@@ -70,8 +70,9 @@ func BuildComposeFile(bi *BoardInfo) error {
 
 		// create the klipper service
 		svc := Service{
-			Image:   "moltencan/klipper",
+			Image:   "moltencan/klipraker",
 			Restart: "unless-stopped",
+			Ports:   []string{portS},
 			Volumes: []string{
 				volS,
 			},
@@ -81,22 +82,22 @@ func BuildComposeFile(bi *BoardInfo) error {
 				envID,
 			},
 		}
-		cs.Services[nameS+"_klipper"] = svc
+		cs.Services[nameS+"klipraker"] = svc
 
-		// create the moonraker service
-		svc = Service{
-			Image:   "moltencan/moonraker",
-			Ports:   []string{portS},
-			Restart: "unless-stopped",
-			Volumes: []string{
-				volS,
-			},
-			Environment: []string{
-				envDir,
-				envID,
-			},
-		}
-		cs.Services[nameS+"_moonraker"] = svc
+		// // create the moonraker service
+		// svc = Service{
+		// 	Image:   "moltencan/moonraker",
+		// 	Ports:   []string{portS},
+		// 	Restart: "unless-stopped",
+		// 	Volumes: []string{
+		// 		volS,
+		// 	},
+		// 	Environment: []string{
+		// 		envDir,
+		// 		envID,
+		// 	},
+		// }
+		// cs.Services[nameS+"_moonraker"] = svc
 	}
 
 	// create the config-editor
