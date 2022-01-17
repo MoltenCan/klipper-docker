@@ -1,4 +1,5 @@
-FROM --platform=$TARGETPLATFORM moltencan/alpine-kbase
+# FROM --platform=$TARGETPLATFORM moltencan/alpine-kbase
+FROM moltencan/alpine-kbase
 
 COPY src/ opt/
 COPY defaults/ /opt/defaults/
