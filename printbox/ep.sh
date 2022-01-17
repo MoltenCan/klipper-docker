@@ -12,15 +12,20 @@ function check_sock {
     }
 }
 
+[ -z $SHARED_PATH ] && {
+    echo "Dfaulting SHARED_PATH to /shared"
+    SHARED_PATH="/shared"
+}
+
 case "$1" in
 up)
     check_sock
-    printbox || exit 1
-    docker-compose -f /printbox/docker-compose.yml up -d
+    printbox -o ${SHARED_PATH}/docker-compose.yml || exit 1
+    docker-compose -f ${SHARED_PATH}/docker-compose.yml up -d
     ;;
 down)
     check_sock
-    docker-compose -f /printbox/docker-compose.yml down
+    docker-compose -f ${SHARED_PATH}/docker-compose.yml down
     ;;
 list)
     printbox

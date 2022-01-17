@@ -11,6 +11,16 @@ function printbox {
         $@
 }
 
+function printbox2 {
+    docker run -it \
+        -v /var/run/docker.sock:/var/run/docker.sock \
+        -v /dev:/dev \
+        -v printbox:/printbox \
+        --privileged \
+        printbox \
+        $@
+}
+
 function printbox_compile {
     [ -z $1 ] && {
         echo "please specify the port e.g. /dev/ttyAMA0"
