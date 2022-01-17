@@ -11,7 +11,7 @@ import (
 )
 
 const (
-	VERSION = "0.0.1"
+	VERSION = "0.0.4"
 )
 
 var (
@@ -47,32 +47,30 @@ func GetBoard() (*BoardInfo, error) {
 	}
 
 	data, err := ioutil.ReadFile(CpuInfoFile)
-	if err != nil {
-		return nil, err
-	}
-
-	for _, line := range strings.Split(string(data), "\n") {
-		parts := strings.Split(line, ": ")
-		if len(parts) != 2 {
-			continue
+	if err == nil {
+		for _, line := range strings.Split(string(data), "\n") {
+			parts := strings.Split(line, ": ")
+			if len(parts) != 2 {
+				continue
+			}
+			switch {
+			case strings.HasPrefix(parts[0], "Hardware"):
+				bi.Hardware = parts[1]
+			case strings.HasPrefix(parts[0], "Revision"):
+				bi.Revision = parts[1]
+			case strings.HasPrefix(parts[0], "Serial"):
+				bi.Serial = parts[1]
+			case strings.HasPrefix(parts[0], "Model"):
+				bi.Model = parts[1]
+			}
 		}
-		switch {
-		case strings.HasPrefix(parts[0], "Hardware"):
-			bi.Hardware = parts[1]
-		case strings.HasPrefix(parts[0], "Revision"):
-			bi.Revision = parts[1]
-		case strings.HasPrefix(parts[0], "Serial"):
-			bi.Serial = parts[1]
-		case strings.HasPrefix(parts[0], "Model"):
-			bi.Model = parts[1]
-		}
-	}
 
-	// now match the port map
-	switch bi.Model {
-	case "Raspberry Pi 3 Model B Plus Rev 1.3":
-		Debugf("board is %s", bi.Model)
-		bi.USB = PortsPi3B13
+		// now match the port map
+		switch bi.Model {
+		case "Raspberry Pi 3 Model B Plus Rev 1.3":
+			Debugf("board is %s", bi.Model)
+			bi.USB = PortsPi3B13
+		}
 	}
 
 	return bi, nil

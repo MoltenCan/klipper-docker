@@ -2,8 +2,6 @@ package printbox
 
 import (
 	"fmt"
-	"io/ioutil"
-	"path/filepath"
 
 	"gopkg.in/yaml.v3"
 )
@@ -14,6 +12,7 @@ type Composer struct {
 	Version  string             `yaml:"version,omitempty"`
 	Services map[string]Service `yaml:"services,omitempty"`
 	Volumes  map[string]*Volume `yaml:"volumes,omitempty"`
+	Networks map[string]Network `yaml:"networks,omitempty"`
 }
 
 type Service struct {
@@ -25,18 +24,31 @@ type Service struct {
 	Volumes     []string `yaml:"volumes,omitempty"`
 	Build       string   `yaml:"build,omitempty"`
 	Devices     []string `yaml:"devices,omitempty"`
+	Networks    []string `yaml:"networks"`
+	Hostname    string   `yaml:"hostname"`
+}
+
+type Network struct {
+	External   bool   `yaml:"external,omitempty"`
+	Name       string `yaml:"name,omitempty"`
+	Driver     string `yaml:"driver,omitempty"`
+	Attachable bool   `yaml:"attachable,omitempty"`
 }
 
 type Volume struct {
 	External bool `json:"external,omitempty"`
 }
 
-func BuildComposeFile(bi *BoardInfo) error {
+func BuildComposeFile(bi *BoardInfo) ([]byte, error) {
 	cs := &Composer{
 		Version:  "3.9",
 		Services: map[string]Service{},
 		Volumes:  map[string]*Volume{},
+		Networks: map[string]Network{},
 	}
+
+	// create the network
+	cs.Networks["printbox"] = Network{}
 
 	// config volume
 	cs.Volumes["printbox"] = &Volume{
@@ -52,6 +64,8 @@ func BuildComposeFile(bi *BoardInfo) error {
 		Volumes: []string{
 			volS,
 		},
+		Networks: []string{"printbox"},
+		Hostname: "fluidd",
 	}
 	cs.Services["fluidd"] = svc
 
@@ -81,23 +95,11 @@ func BuildComposeFile(bi *BoardInfo) error {
 				envDir,
 				envID,
 			},
+			Networks: []string{"printbox"},
+			Hostname: fmt.Sprintf("printer%d", li),
 		}
 		cs.Services[nameS+"klipraker"] = svc
 
-		// // create the moonraker service
-		// svc = Service{
-		// 	Image:   "moltencan/moonraker",
-		// 	Ports:   []string{portS},
-		// 	Restart: "unless-stopped",
-		// 	Volumes: []string{
-		// 		volS,
-		// 	},
-		// 	Environment: []string{
-		// 		envDir,
-		// 		envID,
-		// 	},
-		// }
-		// cs.Services[nameS+"_moonraker"] = svc
 	}
 
 	// create the config-editor
@@ -118,9 +120,7 @@ func BuildComposeFile(bi *BoardInfo) error {
 
 	data, err := yaml.Marshal(cs)
 	if err != nil {
-		return err
+		return []byte{}, err
 	}
-	dcFile := filepath.Join(SharedPath, "docker-compose.yml")
-	Logf("writing compose to %s", dcFile)
-	return ioutil.WriteFile(dcFile, data, 0644)
+	return data, nil
 }

@@ -20,3 +20,15 @@ once I actually getting it working you should only need to run the printbox cont
 
 why am I doing this? well primarily all the existing containers (not fluidd) don't support multi-arch (including docker-compose??) and like every other stupid dev I like to do things "my way"  
 
+
+```bash
+# didn't you know you should never excute scripts randomly downloaded from githum... hmmmmm?
+curl -o printbox.sh https://raw.githubusercontent.com/MoltenCan/klipper-docker/master/printbox.sh
+chmod 755 printbox.sh
+
+# optional
+./printbox.sh pull
+
+# here goes nothing
+./printbox.sh start
+```

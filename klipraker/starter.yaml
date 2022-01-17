@@ -5,11 +5,12 @@ commands:
   command:
   - python3
   - "/opt/klipper/klippy/klippy.py"
-  - -l
-  - ${PRINTBOX_DIR}/klippy.log
   - -a
   - ${PRINTBOX_DIR}/klipper.sock
+  - -l
+  - ${PRINTBOX_DIR}/klippy.log
   - ${PRINTBOX_DIR}/klipper.cfg
+
 
 - name: moonraker
   command:
