@@ -1,0 +1,22 @@
+init:
+  - "/opt/init.sh"
+commands:
+- name: klipper
+  command:
+  - /home/klipper/klippy-env/bin/python
+  - /home/klipper/klipper/klippy/klippy.py
+  - -a
+  - /tmp/klippy_uds
+  - -l
+  - ${PRINTBOX_DIR}/klippy.log
+  - ${PRINTBOX_DIR}/printer.cfg
+
+- name: moonraker
+  command:
+  - /home/klipper/moonraker-env/bin/python
+  - /home/klipper/moonraker/moonraker/moonraker.py
+  - -c
+  - ${PRINTBOX_DIR}/moonraker.conf
+  - -l
+  - ${PRINTBOX_DIR}/moonraker.log
+  

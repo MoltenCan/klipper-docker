@@ -5,7 +5,7 @@ function printbox {
     docker run -it \
         -v /var/run/docker.sock:/var/run/docker.sock \
         -v /dev:/dev \
-        -v printbox:/printbox \
+        -v printbox:/shared \
         --privileged \
         moltencan/printbox \
         $@
@@ -15,7 +15,7 @@ function printbox2 {
     docker run -it \
         -v /var/run/docker.sock:/var/run/docker.sock \
         -v /dev:/dev \
-        -v printbox:/printbox \
+        -v printbox:/shared \
         --privileged \
         printbox \
         $@
@@ -28,7 +28,7 @@ function printbox_compile {
     }
     docker run -it \
         -v /var/run/docker.sock:/var/run/docker.sock \
-        -v /printbox:/printbox \
+        -v /printbox:/shared \
         --device ${1}:/dev/klipperserial \
         --workdir "/klipper" \
         -p 8000:8000 \
